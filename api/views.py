@@ -104,12 +104,7 @@ class CustomUserDetails(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request, *args, **kwargs):
-        if 'steamhex' in kwargs:
-            steamhex = kwargs['steamhex']
-            user = self.queryset.get(steam_hex=steamhex)
-            user = self.serializer_class(user)
-            return Response(user.data)
-        elif 'pk' in kwargs:
+        if 'pk' in kwargs:
             user = self.queryset.get(id=kwargs['pk'])
             user = self.serializer_class(user)
             return Response(user.data)
@@ -157,12 +152,7 @@ class CustomDoctorDetails(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request, *args, **kwargs):
-        if 'steamhex' in kwargs:
-            steamhex = kwargs['steamhex']
-            user = self.queryset.get(steam_hex=steamhex)
-            user = self.serializer_class(user)
-            return Response(user.data)
-        elif 'pk' in kwargs:
+        if 'pk' in kwargs:
             user = self.queryset.get(id=kwargs['pk'])
             user = self.serializer_class(user)
             return Response(user.data)
@@ -204,6 +194,16 @@ class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
+class ChatList(generics.ListCreateAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+
+class ChatDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+
 class MessageList(generics.ListCreateAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
@@ -214,10 +214,10 @@ class MessageList(generics.ListCreateAPIView):
                 cm = self.queryset.get(cat_id=request.data['cat_id'])
             except api.models.Message.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            ticket = Reservation.objects.get(id=request.data['reservation_id'])
+            resv = Reservation.objects.get(id=request.data['reservation_id'])
             msg = self.queryset.create()
             msg.content = cm.content
-            msg.ticket_id = ticket
+            msg.ticket_id = resv
             msg.save()
             # attachments
             achs = Attachment.objects.filter(message_id=cm.id)
@@ -241,13 +241,6 @@ class MessageDetails(generics.RetrieveUpdateDestroyAPIView):
             messages = self.queryset.filter(ticket_id=kwargs['tid'])
             messages = self.serializer_class(messages, many=True)
             return Response(messages.data)
-        if 'defaultmessage' in request.build_absolute_uri():
-            try:
-                message = self.queryset.get(cat_id=kwargs['cid'])
-                message = self.serializer_class(message)
-                return Response(message.data)
-            except api.models.Message.DoesNotExist as e:
-                return Response(status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 

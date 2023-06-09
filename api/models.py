@@ -9,9 +9,7 @@ from .utils import content_file_name, message_file_name, upload_to
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    steam_hex = models.CharField(max_length=255, unique=True, null=True)
     email = models.EmailField(_("email address"), unique=True, null=True)
-    discord_id = models.CharField(max_length=20, unique=True, null=True)
     guest_identifier = models.CharField(max_length=20, null=True)
     name = models.CharField(max_length=255, default=f"User")
     is_staff = models.BooleanField(default=False)
@@ -19,6 +17,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_banned = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     pfp = models.FileField(null=True, upload_to=content_file_name)
+    phone = models.CharField(max_length=255)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -26,7 +25,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return f'{self.email} - {self.steam_hex}'
+        return f'{self.email} - {self.phone}'
 
 
 class CustomDoctor(CustomUser):

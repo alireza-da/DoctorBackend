@@ -13,7 +13,9 @@ urlpatterns = [
     path('users/list/', views.CustomUserList.as_view()),
     path('users/create/', views.CustomUserCreate.as_view()),
     path('users/details/<int:pk>', views.CustomUserDetails.as_view()),
-    path('users/details/<str:steamhex>', views.CustomUserDetails.as_view()),
+    path('doctors/list/', views.CustomDoctorList.as_view()),
+    path('doctors/create/', views.CustomDoctorCreate.as_view()),
+    path('doctors/details/<int:pk>', views.CustomDoctorDetails.as_view()),
     path('users/details/ata/', views.CustomUserDetails.as_view()),
     path('users/details/tickets/<int:uid>', views.TicketDetails.as_view()),
 
@@ -40,7 +42,8 @@ urlpatterns = [
     path('roles/details/delete/<int:sysid>/<int:rid>', views.RoleDetails.as_view()),
     path('roles/details/deleteallroles/<int:sysid>/<int:uid>', views.RoleDetails.as_view()),
 
-    path('tickets/list/', views.TicketList.as_view()),
+    path('chat/list/', views.ChatList.as_view()),
+    path('chat/details/<int:pk>', views.ChatDetails.as_view()),
     path('tickets/details/<int:pk>', views.TicketDetails.as_view()),
     path('tickets/roles/list/', views.TicketRoleList.as_view()),
     path('tickets/roles/details/<int:tid>', views.TicketRoleDetails.as_view()),

@@ -15,8 +15,8 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
         fields = (
-            'steam_hex', 'email', 'discord_id', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
-            'guest_identifier')
+            'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
+            'guest_identifier', 'phone')
 
     # def create(self, validated_data):
     #     user = super().create(validated_data)
@@ -40,8 +40,8 @@ class CustomDoctorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
         fields = (
-            'steam_hex', 'email', 'discord_id', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
-            'guest_identifier', 'personnel_code', 'rank')
+           'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
+            'guest_identifier', 'personnel_code', 'rank', 'phone')
 
     # def create(self, validated_data):
     #     user = super().create(validated_data)
