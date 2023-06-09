@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import CustomUserManager
@@ -27,12 +29,43 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return f'{self.email} - {self.steam_hex}'
 
 
+class CustomDoctor(CustomUser):
+    personnel_code = models.CharField(max_length=255)
+    rank = models.IntegerField(default=0)
+
+
+class Category(models.Model):
+    name = models.CharField(default="عمومی", max_length=255)
+
+
+class Reservation(models.Model):
+    doctor = models.ForeignKey(to=CustomDoctor, on_delete=models.SET_NULL)
+    patience = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL)
+    date = models.DateTimeField(default=datetime.datetime.now())
+    rating = models.IntegerField(default=0)
+    comment = models.TextField(default="")
+    category = models.ForeignKey(to=Category, on_delete=models.SET_NULL)
+
+
+class Chat(models.Model):
+    class ChatType(models.TextChoices):
+        vid = 'video'
+        audio = 'audio'
+        text = 'text'
+        other = 'other'
+
+    participant1 = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL)
+    participant2 = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL)
+    reservation = models.ForeignKey(to=Reservation, on_delete=models.SET_NULL)
+    type = models.CharField(choices=ChatType.choices, default=ChatType.text, max_length=10)
+
+
 class Message(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     edite_at = models.DateTimeField(default=timezone.now)
     content = models.TextField(default="", null=True)
     user_id = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL, null=True)
-    ticket_id = models.ForeignKey(to=Ticket, on_delete=models.CASCADE, null=True)
+    ticket_id = models.ForeignKey(to=Chat, on_delete=models.CASCADE, null=True)
     reply_to = models.ForeignKey(to='self', on_delete=models.SET_NULL, null=True)
 
 
