@@ -22,6 +22,7 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
+from .utils import get_client_ip
 
 
 class CustomAuthToken(ObtainAuthToken):
@@ -43,6 +44,8 @@ class CustomAuthToken(ObtainAuthToken):
                                                    context={'request': request})
 
                 user = CustomUser.objects.get(email=request.data['username'])
+                user.last_ip = get_client_ip(request)
+                user.save()
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({
                     'token': token.key,
@@ -183,10 +186,16 @@ class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
 
     def get(self, request, *args, **kwargs):
-        if 'sysid' in kwargs and 'system' in request.build_absolute_uri():
-            categories = self.queryset.filter(sys_id=kwargs['sysid'])
-            categories = self.serializer_class(categories, many=True)
-            return Response(categories.data)
+        if 'doctor' in request.build_absolute_uri():
+            categories = CategoryDoctor.objects.filter(doctor_id=kwargs['did'])
+            res = []
+            for cat in categories:
+                _cat = self.queryset.get(id=cat.id)
+                res.append(self.serializer_class(_cat).data)
+            return Response(status=status.HTTP_200_OK, data=res)
+        if 'doctors' in request.build_absolute_uri():
+            categories = CategoryDoctor.objects.filter(category_id=kwargs['cid'])
+            return Response(status=status.HTTP_200_OK, data=self.serializer_class(categories, many=True).data)
         if 'pk' in kwargs:
             return self.retrieve(request, args, kwargs)
         else:
@@ -263,3 +272,38 @@ class AttachmentDetails(generics.RetrieveUpdateDestroyAPIView):
             return Response(attachments.data)
         else:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class CategoryDoctorList(generics.ListCreateAPIView):
+    queryset = CategoryDoctor.objects.all()
+    serializer_class = CategoryDoctorSerializer
+
+
+class CategoryDoctorDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CategoryDoctor.objects.all()
+    serializer_class = CategoryDoctorSerializer
+
+
+class ReservationDataList(generics.ListCreateAPIView):
+    queryset = ReservationData.objects.all()
+    serializer_class = ReservationDataSerializer
+
+
+class ReservationDataDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ReservationData.objects.all()
+    serializer_class = ReservationDataSerializer
+
+    def get(self, request, *args, **kwargs):
+        if 'did' in kwargs:
+            rds = self.queryset.filter(doctor_id=kwargs['did'])
+            rds_classified = {'occupied': [], 'free': []}
+            for rd in rds:
+                if rd.occupied:
+                    rds_classified['occupied'].append(rd)
+                else:
+                    rds_classified['free'].append(id)
+            return Response(status=status.HTTP_200_OK, data=self.serializer_class(rds, many=True))
+        else:
+            return self.retrieve(request, args, kwargs)
+
+

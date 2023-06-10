@@ -16,7 +16,7 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         model = CustomUser
         fields = (
             'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
-            'guest_identifier', 'phone')
+            'guest_identifier', 'phone', 'last_ip_address')
 
     # def create(self, validated_data):
     #     user = super().create(validated_data)
@@ -38,9 +38,9 @@ class CustomDoctorSerializer(serializers.HyperlinkedModelSerializer):
     pfp = serializers.FileField(required=False)
 
     class Meta:
-        model = CustomUser
+        model = CustomDoctor
         fields = (
-           'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
+            'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
             'guest_identifier', 'personnel_code', 'rank', 'phone')
 
     # def create(self, validated_data):
@@ -56,7 +56,7 @@ class CustomDoctorSerializer(serializers.HyperlinkedModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = 'name'
+        fields = "__all__"
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -79,7 +79,19 @@ class ReservationSerializer(serializers.ModelSerializer):
         fields = ('doctor', 'patience', 'date', 'rating', 'comment', 'category')
 
 
+class ReservationDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReservationData
+        fields = ('doctor', 'start_date', 'end_date', 'occupied')
+
+
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = ('participant1', 'participant2', 'reservation')
+
+
+class CategoryDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoryDoctor
+        fields = ('doctor', 'category')

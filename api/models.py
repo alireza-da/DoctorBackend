@@ -18,7 +18,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     pfp = models.FileField(null=True, upload_to=content_file_name)
     phone = models.CharField(max_length=255)
-
+    last_ip = models.CharField(max_length=255)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -37,13 +37,25 @@ class Category(models.Model):
     name = models.CharField(default="عمومی", max_length=255)
 
 
+class CategoryDoctor(models.Model):
+    doctor = models.ForeignKey(to=CustomDoctor, on_delete=models.CASCADE)
+    category = models.ForeignKey(to=Category, on_delete=models.CASCADE)
+
+
+class ReservationData(models.Model):
+    doctor = models.ForeignKey(to=CustomDoctor, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(default=datetime.datetime.now())
+    end_date = models.DateTimeField(default=datetime.datetime.now())
+    occupied = models.BooleanField(default=False)
+
+
 class Reservation(models.Model):
-    doctor = models.ForeignKey(to=CustomDoctor, on_delete=models.SET_NULL)
-    patience = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL)
-    date = models.DateTimeField(default=datetime.datetime.now())
+    doctor = models.ForeignKey(to=CustomDoctor, on_delete=models.SET_NULL, null=True, related_name='doctor')
+    patience = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL, null=True, related_name='patience')
+    data = models.ForeignKey(to=ReservationData, on_delete=models.SET_NULL, null=True)
     rating = models.IntegerField(default=0)
     comment = models.TextField(default="")
-    category = models.ForeignKey(to=Category, on_delete=models.SET_NULL)
+    category = models.ForeignKey(to=Category, on_delete=models.SET_NULL, null=True)
 
 
 class Chat(models.Model):
@@ -53,9 +65,9 @@ class Chat(models.Model):
         text = 'text'
         other = 'other'
 
-    participant1 = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL)
-    participant2 = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL)
-    reservation = models.ForeignKey(to=Reservation, on_delete=models.SET_NULL)
+    participant1 = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, related_name='p1')
+    participant2 = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL, null=True, related_name='p2')
+    reservation = models.ForeignKey(to=Reservation, on_delete=models.SET_NULL, null=True)
     type = models.CharField(choices=ChatType.choices, default=ChatType.text, max_length=10)
 
 
