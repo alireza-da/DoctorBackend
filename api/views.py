@@ -186,16 +186,21 @@ class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
 
     def get(self, request, *args, **kwargs):
-        if 'doctor' in request.build_absolute_uri():
+        if 'doctor' in request.build_absolute_uri() and 'did' in kwargs:
             categories = CategoryDoctor.objects.filter(doctor_id=kwargs['did'])
             res = []
             for cat in categories:
                 _cat = self.queryset.get(id=cat.id)
+
                 res.append(self.serializer_class(_cat).data)
             return Response(status=status.HTTP_200_OK, data=res)
         if 'doctors' in request.build_absolute_uri():
-            categories = CategoryDoctor.objects.filter(category_id=kwargs['cid'])
-            return Response(status=status.HTTP_200_OK, data=self.serializer_class(categories, many=True).data)
+            doctors = CategoryDoctor.objects.filter(category_id=kwargs['cid'])
+            res = []
+            for d in doctors:
+                doctor = CustomDoctor.objects.get(id=d.id)
+                res.append(CustomDoctorDetails.serializer_class(doctor).data)
+            return Response(status=status.HTTP_200_OK, data=res)
         if 'pk' in kwargs:
             return self.retrieve(request, args, kwargs)
         else:
