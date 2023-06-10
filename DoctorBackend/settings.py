@@ -71,6 +71,12 @@ TEMPLATES = [
         },
     },
 ]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost:5173",
+    "https://62.3.14.249:5173"
+]
 
 WSGI_APPLICATION = 'DoctorBackend.wsgi.application'
 

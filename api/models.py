@@ -18,7 +18,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     pfp = models.FileField(null=True, upload_to=content_file_name)
     phone = models.CharField(max_length=255)
-    last_ip = models.CharField(max_length=255)
+    last_ip = models.CharField(max_length=255, default="0.0.0.0")
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 

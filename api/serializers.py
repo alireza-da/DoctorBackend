@@ -16,7 +16,7 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         model = CustomUser
         fields = (
             'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
-            'guest_identifier', 'phone', 'last_ip_address')
+            'guest_identifier', 'phone', 'last_ip')
 
     # def create(self, validated_data):
     #     user = super().create(validated_data)
@@ -41,7 +41,7 @@ class CustomDoctorSerializer(serializers.HyperlinkedModelSerializer):
         model = CustomDoctor
         fields = (
             'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
-            'guest_identifier', 'personnel_code', 'rank', 'phone')
+            'guest_identifier', 'personnel_code', 'rank', 'phone', 'last_ip')
 
     # def create(self, validated_data):
     #     user = super().create(validated_data)
@@ -95,3 +95,5 @@ class CategoryDoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryDoctor
         fields = ('doctor', 'category')
+
+

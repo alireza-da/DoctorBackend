@@ -128,7 +128,7 @@ class CustomUserDetails(generics.RetrieveUpdateDestroyAPIView):
             return self.update(request, args, kwargs)
 
 
-class CustomDoctorList(generics.ListAPIView):
+class CustomDoctorList(generics.ListCreateAPIView):
     queryset = CustomDoctor.objects.all()
     serializer_class = CustomDoctorSerializer
     permission_classes = []
