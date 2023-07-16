@@ -95,9 +95,11 @@ class CustomUserCreate(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid():
             serializer.create(serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -109,6 +111,12 @@ class CustomUserDetails(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
             user = self.queryset.get(id=kwargs['pk'])
+            user = self.serializer_class(user)
+            return Response(user.data)
+        elif 'cfid' in kwargs:
+            user = self.queryset.get(id=kwargs['cfid'])
+            user.confirmed = True
+            user.save()
             user = self.serializer_class(user)
             return Response(user.data)
         else:
@@ -217,6 +225,15 @@ class ChatDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
 
+    def get(self, request, *args, **kwargs):
+        if 'p1' in kwargs and 'p2' in kwargs:
+            chat = self.queryset.get(participant1_id=kwargs['p1'], participant2_id=kwargs['p2'])
+            return Response(self.serializer_class(chat).data)
+
+        if 'rid' in kwargs:
+            chat = self.queryset.get(reservation_id=kwargs['rid'])
+            return Response(self.serializer_class(chat).data)
+
 
 class MessageList(generics.ListCreateAPIView):
     queryset = Message.objects.all()
@@ -312,3 +329,11 @@ class ReservationDataDetails(generics.RetrieveUpdateDestroyAPIView):
             return self.retrieve(request, args, kwargs)
 
 
+class ReservationList(generics.ListCreateAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+
+class ReservationDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer

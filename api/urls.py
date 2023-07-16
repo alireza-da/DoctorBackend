@@ -18,6 +18,7 @@ urlpatterns = [
     path('doctors/create/', views.CustomDoctorCreate.as_view()),
     path('doctors/details/<int:pk>', views.CustomDoctorDetails.as_view()),
     path('users/details/ata/', views.CustomUserDetails.as_view()),
+    path('users/details/confirm/<int:cfid>', views.CustomUserDetails.as_view()),
     # Get Categories (Professions/Fields)
     path('system/categories/list/', views.CategoryList.as_view()),
     path('system/categories/details/<int:sysid>', views.CategoryDetails.as_view()),
@@ -29,6 +30,8 @@ urlpatterns = [
     # Chats
     path('chat/list/', views.ChatList.as_view()),
     path('chat/details/<int:pk>', views.ChatDetails.as_view()),
+    path('chat/getbyuser/<int:p1>/<int:p2>', views.ChatDetails.as_view()),
+    path('chat/getbyres/<int:rid>', views.ChatDetails.as_view()),
     # Messages & Attachments
     path('messages/list/', views.MessageList.as_view()),
     path('messages/details/<int:tid>', views.MessageDetails.as_view()),
@@ -38,11 +41,16 @@ urlpatterns = [
     path('attach/details/<int:pk>', views.AttachmentDetails.as_view()),
     # find a doctors scheduling
     path('reservation-data/doctor/<int:did>', views.ReservationDataDetails.as_view()),
+    path('reservation-data/details/<int:pk>', views.ReservationDataDetails.as_view()),
     # CRUD a reservation data
     path('reservation-data/list/', views.ReservationDataList.as_view()),
     # CRUD for category doctor management
     path('category-doctor/list/', views.CategoryDoctorList.as_view()),
     path('category-doctor/details/<int:pk>', views.CategoryDoctorDetails.as_view()),
+    # CRUD Reservations
+    path('reservations/list/', views.ReservationList.as_view()),
+    path('reservations/details/<int:pk>', views.ReservationDetails.as_view()),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

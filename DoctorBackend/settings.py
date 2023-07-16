@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +24,10 @@ SECRET_KEY = 'django-insecure-%wrh$vgeir3fv_kp7#o3dxl3zbzwcr#=l$u_1pk4&!#$p6b+7c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '10.0.2.2',
+    'localhost'
+]
 
 # Application definition
 
@@ -75,7 +78,8 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOWED_ORIGINS = [
     "https://localhost:5173",
-    "https://62.3.14.249:5173"
+    "https://62.3.14.249:5173",
+    "http://10.0.2.2"
 ]
 
 WSGI_APPLICATION = 'DoctorBackend.wsgi.application'
@@ -119,10 +123,14 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = 'static/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'app/media')
+# URL used to access the media
+MEDIA_URL = '/media/'
+# # Static files (CSS, JavaScript, Images)
+# # https://docs.djangoproject.com/en/4.2/howto/static-files/
+#
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

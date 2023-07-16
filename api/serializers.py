@@ -16,7 +16,7 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         model = CustomUser
         fields = (
             'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
-            'guest_identifier', 'phone', 'last_ip')
+            'guest_identifier', 'phone', 'last_ip', 'confirmed', 'credits')
 
     # def create(self, validated_data):
     #     user = super().create(validated_data)
@@ -41,7 +41,8 @@ class CustomDoctorSerializer(serializers.HyperlinkedModelSerializer):
         model = CustomDoctor
         fields = (
             'email', 'name', 'is_staff', 'is_banned', 'id', 'date_joined', 'pfp', 'password',
-            'guest_identifier', 'personnel_code', 'rank', 'phone', 'last_ip')
+            'guest_identifier', 'personnel_code', 'rank', 'phone', 'last_ip', 'credits',
+            'voicePrice', 'videoPrice', 'textPrice', 'about', 'is_consulting')
 
     # def create(self, validated_data):
     #     user = super().create(validated_data)
@@ -56,7 +57,7 @@ class CustomDoctorSerializer(serializers.HyperlinkedModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('name', 'id')
+        fields = ('name', 'id', 'parent')
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -76,7 +77,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
-        fields = ('doctor', 'patience', 'date', 'rating', 'comment', 'category')
+        fields = ('doctor', 'patience', 'data', 'rating', 'comment', 'category', 'price', 'status')
 
 
 class ReservationDataSerializer(serializers.ModelSerializer):
@@ -88,7 +89,7 @@ class ReservationDataSerializer(serializers.ModelSerializer):
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
-        fields = ('participant1', 'participant2', 'reservation')
+        fields = ('participant1', 'participant2', 'reservation', 'id')
 
 
 class CategoryDoctorSerializer(serializers.ModelSerializer):
