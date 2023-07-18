@@ -65,7 +65,7 @@ class Reservation(models.Model):
     rating = models.IntegerField(default=0)
     comment = models.TextField(default="")
     category = models.ForeignKey(to=Category, on_delete=models.SET_NULL, null=True)
-    status = models.CharField(default="Free")
+    status = models.CharField(default="Free", max_length=255)
     price = models.IntegerField(default=0)
 
 
