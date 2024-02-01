@@ -53,8 +53,8 @@ class CategoryDoctor(models.Model):
 
 class ReservationData(models.Model):
     doctor = models.ForeignKey(to=CustomDoctor, on_delete=models.CASCADE)
-    start_date = models.DateTimeField(default=datetime.datetime.now())
-    end_date = models.DateTimeField(default=datetime.datetime.now())
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField(default=timezone.now)
     occupied = models.BooleanField(default=False)
 
 

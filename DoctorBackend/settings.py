@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,11 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%wrh$vgeir3fv_kp7#o3dxl3zbzwcr#=l$u_1pk4&!#$p6b+7c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
     '10.0.2.2',
-    'localhost'
+    'localhost',
+    '*',
 ]
 
 # Application definition
@@ -78,8 +80,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOWED_ORIGINS = [
     "https://localhost:5173",
-    "https://62.3.14.249:5173",
-    "http://10.0.2.2"
 ]
 
 WSGI_APPLICATION = 'DoctorBackend.wsgi.application'
@@ -87,24 +87,19 @@ WSGI_APPLICATION = 'DoctorBackend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': config('POSTGRES_NAME', default=''),
+    'USER': config('POSTGRES_USER', default=''),
+    'PASSWORD': config('POSTGRES_PASSWORD', default=''),
+    'HOST': config('POSTGRES_HOST', default=''),
+    'PORT': config('POSTGRES_PORT', default=''),
     }
 }
 
-if os.environ.get('POSTGRES_NAME'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('POSTGRES_NAME'),
-            'USER': os.environ.get('POSTGRES_USER'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-            'HOST': 'db',
-            'PORT': 5432,
-        }
-    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
